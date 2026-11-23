@@ -75,7 +75,11 @@ if [ -d "$app_home" ]; then
   for src in "$root"/herdr-app/mods/*/; do
     link_agent "${src%/}" "$app_home/mods"
   done
-  command -v herdr-app > /dev/null 2>&1 && herdr-app check "$root/herdr-app/mods/worktrees"
+  if command -v herdr-app > /dev/null 2>&1; then
+    for src in "$root"/herdr-app/mods/*/; do
+      herdr-app check "${src%/}"
+    done
+  fi
   if command -v jq > /dev/null 2>&1; then
     merge_keys "$root/herdr-app/keys.json" "$app_home/keys.json"
   else

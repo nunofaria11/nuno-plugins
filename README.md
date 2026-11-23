@@ -5,7 +5,7 @@ Personal tooling that a shell, a coding agent or the Herdr app picks up:
 | directory | what | consumed by |
 |---|---|---|
 | [`cli/`](cli/) | the `nu` CLI (`wt`, `rb`, `rv`) and the skills and commands that drive it | shell, omp, Claude Code |
-| [`herdr-app/`](herdr-app/) | Herdr desktop app: the `worktrees` dialog mod, split scripts for diff and `nu rv` | Herdr app |
+| [`herdr-app/`](herdr-app/) | Herdr desktop app: the `worktrees` dialog mod, the `spaces-numbered` sidebar mod, split scripts for diff and `nu rv` | Herdr app |
 
 Third-party skills (`find-skills`, `simple-english`, `gcx`) are not here: `npx skills` manages
 them in `~/.agents`, next to the links this repo installs.
@@ -52,6 +52,23 @@ Where the checkout lands, in order:
 
 Branch slashes become dashes. `nu wt` reads the same config, so `wt cd`, `wt list` and
 `wt clean` agree with the dialog in cases 1 and 2.
+
+### `spaces-numbered` mod
+
+A copy of Herdr's `spaces` sidebar (0.1.16) that shows each space's shortcut on its row,
+counted from 0: `⌃0` on the first space up to `⌃9` on the tenth; the narrow rail shows the
+same numbers. Its `mod.json` places it nowhere, so a layout has to name it in a block
+(`"content": { "mod": "spaces-numbered" }`).
+
+The labels assume these bindings in the `global` section of `~/.config/herdr-app/keys.json`
+(`space.select` counts from 1):
+
+```json
+"ctrl-0": "space.select:1",
+"ctrl-1": "space.select:2",
+…
+"ctrl-9": "space.select:10"
+```
 
 ### Keys
 
