@@ -5,6 +5,7 @@ Personal tooling that a shell, a coding agent or the Herdr app picks up:
 | directory | what | consumed by |
 |---|---|---|
 | [`cli/`](cli/) | the `nu` CLI (`wt`, `rb`, `rv`) and the skills and commands that drive it | shell, omp, Claude Code |
+| [`claude-code/`](claude-code/) | Claude Code mods: `plan-annotations` | Claude Code |
 | [`herdr-app/`](herdr-app/) | Herdr desktop app: the `worktrees` dialog mod, the `spaces-numbered` sidebar mod, split scripts for diff and `nu rv` | Herdr app |
 
 Third-party skills (`find-skills`, `simple-english`, `gcx`) are not here: `npx skills` manages
@@ -18,11 +19,40 @@ git clone https://github.com/nunofaria11/nuno-plugins ~/code/personal/nuno-plugi
 ```
 
 Symlinks `cli/bin/nu` into `~/.local/bin`, the nu skills and commands into `~/.agents/` (omp
-and Claude Code both read from there), `herdr-app/mods/*` into `~/.config/herdr-app/mods/`,
-and wires `cli/shell/nu.zsh` into `~/.zshrc`. Everything is a symlink, so edits are live;
+and Claude Code both read from there), `claude-code/mods/*` into `~/.claude/skills/`,
+`herdr-app/mods/*` into `~/.config/herdr-app/mods/`, and wires `cli/shell/nu.zsh` into `~/.zshrc`. Everything is a symlink, so edits are live;
 re-run after moving the repo or adding a skill, command or mod. The one copy is
 `herdr-app/keys.json`, merged into the app's `keys.json` (see Leader keys): re-run after
 changing it.
+
+## Claude Code mods
+
+Claude Code loads a plugin folder in `~/.claude/skills/<name>` as a mod and reloads it on save.
+`claude plugin validate <folder>` and `claude plugin test <folder>` check one.
+
+### `plan-annotations` mod
+
+Lets you review a plan by writing notes into it. Open the plan with Ctrl+G and leave HTML
+comments: `<!-- ... -->` at the end of a line is a note on that line, on its own line a note on
+the line above. Notes inside code spans and fences are ignored.
+
+When you approve or reject the plan, the mod reads the plan file and tells Claude about every
+note, by line, and marks the result block with `↳ See annotations`. On approval it also tells
+Claude not to execute yet. A rejection without feedback ends the turn, so the notes go with
+your next prompt instead, unless Claude already removed them.
+
+It pairs with this rule in `~/.claude/CLAUDE.md`, which says what to do with the notes:
+
+```markdown
+## Plan annotations
+
+- In a plan, an HTML comment (`<!-- ... -->`) is my note — a change request, not part of the plan.
+  At the end of a line it applies to that line; on its own line it applies to the line above.
+- Even if I approve, address every note first: revise the plan, remove the notes, and present it
+  again. Never execute a plan that still contains notes.
+- If I reject a plan, re-read the plan file before revising — my notes may be there and not in
+  my message.
+```
 
 ## Herdr desktop app
 

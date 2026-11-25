@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Symlinks cli/bin/nu into ~/.local/bin, the nu skills and commands into ~/.agents,
-# the Herdr app mods into its mods folder, and wires the zsh wrapper into ~/.zshrc.
+# the Claude Code mods into ~/.claude/skills, the Herdr app mods into its mods folder,
+# and wires the zsh wrapper into ~/.zshrc.
 set -euo pipefail
 
 root=$(cd -P "$(dirname "$0")" && pwd)
@@ -40,6 +41,11 @@ for src in "$root"/cli/skills/*/; do
 done
 for src in "$root"/cli/commands/*.md; do
   if [ -f "$src" ]; then link_agent "$src" "$agents/commands"; fi
+done
+
+# Claude Code loads a plugin folder in ~/.claude/skills/<name> as a mod and hot-reloads it.
+for src in "$root"/claude-code/mods/*/; do
+  if [ -d "$src" ]; then link_agent "${src%/}" "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills"; fi
 done
 
 # Adds herdr-app/keys.json's bindings to the app's keys.json where the key is free; a key bound

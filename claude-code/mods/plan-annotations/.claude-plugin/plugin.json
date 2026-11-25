@@ -1,0 +1,1 @@
+{ "name": "plan-annotations", "version": "0.2.0", "description": "Points Claude at <!-- --> notes left in a plan file when a plan is approved or rejected", "types": "./types/index.d.ts" }
